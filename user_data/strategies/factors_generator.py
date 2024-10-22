@@ -8,9 +8,10 @@
 # Factors Name must fit freqtrade AI
 import pandas as pd
 import talib.abstract as ta
+import os
 
 
-def Quick_Factor_Return_N_IC(factor_df: pd.DataFrame, open_df: pd.DataFrame, n: int, name = '', time_frame = ''):
+def Quick_Factor_Return_N_IC(factor_df: pd.DataFrame, open_df: pd.DataFrame, n: int, name='', time_frame=''):
     return_n = open_df.pct_change(n).shift(-n - 1)
     result = factor_df.corrwith(return_n, axis=1, method='spearman').dropna(how='all')
     report = {
@@ -18,18 +19,20 @@ def Quick_Factor_Return_N_IC(factor_df: pd.DataFrame, open_df: pd.DataFrame, n: 
         'time frame': time_frame,
         'IC mean': round(result.mean(), 4),
         'IC std': round(result.std(), 4),
-        'IR': round(result.mean()/result.std(), 4),
-        'IC>0': round(len(result[result > 0].dropna())/len(result), 4),
-        'ABS_IC>2%': round(len(result[abs(result) > 0.02].dropna())/len(result), 4),
+        'IR': round(result.mean() / result.std(), 4),
+        'IC>0': round(len(result[result > 0].dropna()) / len(result), 4),
+        'ABS_IC>2%': round(len(result[abs(result) > 0.02].dropna()) / len(result), 4),
     }
-    return result,report
+    return result, report
+
 
 def mad(df, n=3 * 1.4826):
     # MAD:中位数去极值
-    def filter_extreme_MAD(series,n):
+    def filter_extreme_MAD(series, n):
         median = series.median()
         new_median = ((series - median).abs()).median()
-        return series.clip(median - n*new_median,median + n*new_median)
+        return series.clip(median - n * new_median, median + n * new_median)
+
     # 离群值处理
     df = df.apply(lambda x: filter_extreme_MAD(x, n), axis=1)
 
@@ -41,8 +44,8 @@ def standardize(df):
 
 
 class FactorsGenerator:
-    def __init__(self, time_frame):
-        self.factor_methods = []
+    def __init__(self, time_frame, is_run_live=True):
+        self.factor_methods = [] if is_run_live else self.get_factor_methods()
         self.time_frame = time_frame
 
     def generate_factors(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -53,9 +56,17 @@ class FactorsGenerator:
             df.rename(columns={factor_method: freqtrade_ai_factor_name}, inplace=True)
         return df
 
+    def load_factors_from_file(self):
+        factors_info_df = pd.read_csv(f'./factors_info_{self.time_frame}.csv')
+        if factors_info_df is not None and not factors_info_df.empty:
+            self.factor_methods = factors_info_df['factor_method'].tolist()
+
     def validate_factors(self, df_dict: dict) -> None:
         factor_methods = self.get_factor_methods()
         self.factor_methods = []
+        factors_info = []
+
+        # Check is factors files exist
         for factor_method in factor_methods:
             # Combo all pairs factors
             all_pair_factor_df = pd.DataFrame()
@@ -81,11 +92,15 @@ class FactorsGenerator:
                 '15m': 4,
                 '1h': 2
             }
-            result, report = Quick_Factor_Return_N_IC(standardized_factor_df, all_pair_open_df, target_n_map[self.time_frame], factor_method, self.time_frame)
+            result, report = Quick_Factor_Return_N_IC(standardized_factor_df, all_pair_open_df,
+                                                      target_n_map[self.time_frame], factor_method, self.time_frame)
             print(report)
             if abs(report['IC mean']) > 0.03 and abs(report['IR']) > 0.2:
                 self.factor_methods.append(factor_method)
-        print(self.factor_methods)
+                factors_info.append({'factor_method': factor_method, 'IC': report['IC mean'], 'IR': report['IR']})
+        factors_info_df = pd.DataFrame.from_records(factors_info)
+        print(factors_info_df)
+        factors_info_df.to_csv(f'./factors_info_{self.time_frame}.csv')
 
     def calculate_single_factor(self, func, name, df: pd.DataFrame) -> pd.DataFrame:
         res = func(df)
@@ -166,5 +181,3 @@ class FactorsGenerator:
     def factor_roc_72(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         dataframe['factor_roc_72'] = ta.ROC(dataframe, timeperiod=72)
         return dataframe
-
-
