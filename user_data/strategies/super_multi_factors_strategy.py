@@ -74,12 +74,12 @@ class SuperMultiFactorsStrategy(IStrategy):
             # Do validation again
             logger.info("Starting re-validating factors")
             self.is_validating_factors = True
-            self.factor_generator_5m.validate_factors(self.pair_data_dict_5m)
-            logger.info(f"5m timeframe factors {self.factor_generator_5m.factor_methods}")
-            self.factor_generator_15m.validate_factors(self.pair_data_dict_15m)
-            logger.info(f"15m timeframe factors {self.factor_generator_15m.factor_methods}")
-            self.factor_generator_1h.validate_factors(self.pair_data_dict_1h)
-            logger.info(f"1h timeframe factors {self.factor_generator_1h.factor_methods}")
+            # self.factor_generator_5m.validate_factors(self.pair_data_dict_5m)
+            # logger.info(f"5m timeframe factors {self.factor_generator_5m.factor_methods}")
+            # self.factor_generator_15m.validate_factors(self.pair_data_dict_15m)
+            # logger.info(f"15m timeframe factors {self.factor_generator_15m.factor_methods}")
+            # self.factor_generator_1h.validate_factors(self.pair_data_dict_1h)
+            # logger.info(f"1h timeframe factors {self.factor_generator_1h.factor_methods}")
 
             # Save the validated time and set factor_validation_ready to True
             self.factors_validated_time = current_time

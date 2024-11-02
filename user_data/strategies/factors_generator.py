@@ -45,7 +45,7 @@ def standardize(df):
 
 class FactorsGenerator:
     def __init__(self, time_frame, is_run_live=True):
-        self.factor_methods = [] if is_run_live else self.get_factor_methods()
+        self.factor_methods = self.get_factor_methods()
         self.time_frame = time_frame
 
     def generate_factors(self, df: pd.DataFrame) -> pd.DataFrame:
@@ -181,3 +181,41 @@ class FactorsGenerator:
     def factor_roc_72(self, dataframe: pd.DataFrame) -> pd.DataFrame:
         dataframe['factor_roc_72'] = ta.ROC(dataframe, timeperiod=72)
         return dataframe
+
+    def factor_alpha001(self, dataframe: pd.DataFrame):
+        inner = dataframe.close.copy()
+        daily_returns = returns(dataframe.close)
+        inner[daily_returns < 0] = stddev(daily_returns, 20)
+        dataframe['factor_alpha001'] = rank(ts_argmax(inner ** 2, 5)) - 0.5
+        return dataframe
+
+
+def returns(df):
+    return df.rolling(2).apply(lambda x : x.iloc[-1] / x.iloc[0]) - 1
+
+def stddev(df, window=10):
+    """
+    Wrapper function to estimate standard deviation.
+    :param df: a pandas dataframe
+    :param window: the rolling window
+    :return: a pandas dataframe with time-series min over the past 'window' days
+    """
+    return df.rolling(window=window).std()
+
+def rank(df):
+    """
+    Cross-sectional rank
+    :param df: a pandas DataFrame.
+    :return: a pandas DataFrame with rank along columns.
+    """
+    return df.rank(axis=1, method='min', pct=True)
+
+def ts_argmax(df, window=10):
+    """
+    Wrapper function to estimate which day ts_max(df, window) occurred on
+    :param df: a pandas DataFrame.
+    :param window: the rolling window.
+    :return: well.. that :)
+    """
+    return df.rolling(window).apply(np.argmax) + 1
+
