@@ -275,7 +275,7 @@ class MultiFactorsStrategyV1(IStrategy):
                 if combine_factor_df.shape[0] == 0:
                     combine_factor_df = standardized_factors_df_dict[key] * (-1 if ic < 0 else 1)
                 else:
-                    combine_factor_df = combine_factor_df + (standardized_factors_df_dict[key] * -1 if ic < 0 else 1)
+                    combine_factor_df = combine_factor_df + (standardized_factors_df_dict[key] * (-1 if ic < 0 else 1))
 
             max_open_trades = self.config['max_open_trades']
             if self.dp.runmode == 'live':
