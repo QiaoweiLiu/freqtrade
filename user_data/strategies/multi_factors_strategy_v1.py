@@ -158,7 +158,7 @@ class MultiFactorsStrategyV1(IStrategy):
     exit_short_rsi = IntParameter(low=1, high=50, default=30, space="buy", optimize=True, load=True)
 
     # Number of candles the strategy requires before producing valid signals
-    startup_candle_count: int = 200
+    startup_candle_count: int = 80
 
     order_time_in_force = {"entry": "GTC", "exit": "GTC"}
 
@@ -222,48 +222,47 @@ class MultiFactorsStrategyV1(IStrategy):
                 candles.set_index(['date'], inplace=True)
                 if len(factors_df_dict.keys()) == 0:
                     # Hard code parameter first for research
-                    # factors_df_dict['NATR'] = factor_natr(candles, key)[key].to_frame()
+                    factors_df_dict['NATR'] = factor_natr(candles, key)[key].to_frame()
                     factors_df_dict['ROCR100'] = factor_rocr100(candles, key)[key].to_frame()
                     factors_df_dict['TRIX'] = factor_trix(candles, key)[key].to_frame()
-                    # factors_df_dict['PPO'] = factor_ppo(candles, key)[key].to_frame()
-                    # factors_df_dict['DX'] = factor_dx(candles, key)[key].to_frame()
+                    factors_df_dict['PPO'] = factor_ppo(candles, key)[key].to_frame()
+                    factors_df_dict['DX'] = factor_dx(candles, key)[key].to_frame()
                     factors_df_dict['ADX'] = factor_adx(candles, key)[key].to_frame()
-                    # factors_df_dict['MINUS_DI'] = factor_minus_di(candles, key)[key].to_frame()
+                    factors_df_dict['MINUS_DI'] = factor_minus_di(candles, key)[key].to_frame()
                     factors_df_dict['ADXR'] = factor_adxr(candles, key)[key].to_frame()
-                    factors_df_dict['ULTOSC'] = factor_ultosc(candles, key)[key].to_frame()
+                    # factors_df_dict['ULTOSC'] = factor_ultosc(candles, key)[key].to_frame()
                     factors_df_dict['ULTOSC1'] = factor_ultosc1(candles, key)[key].to_frame()
-                    # factors_df_dict['MFI'] = factor_mfi(candles, key)[key].to_frame()
-                    # factors_df_dict['PLUS_DI'] = factor_plus_di(candles, key)[key].to_frame()
+                    factors_df_dict['MFI'] = factor_mfi(candles, key)[key].to_frame()
+                    factors_df_dict['PLUS_DI'] = factor_plus_di(candles, key)[key].to_frame()
                     factors_df_dict['BOP'] = factor_bop(candles, key)[key].to_frame()
                     # factors_df_dict['PLUS_DM'] = factor_plus_dm(candles, key)[key].to_frame()
-                    # factors_df_dict['AROONOSC'] = factor_aroonosc(candles, key)[key].to_frame()
-                    # factors_df_dict['WILLR'] = factor_willr(candles, key)[key].to_frame()
+                    factors_df_dict['AROONOSC'] = factor_aroonosc(candles, key)[key].to_frame()
+                    factors_df_dict['WILLR'] = factor_willr(candles, key)[key].to_frame()
                     factors_df_dict['ADOSC'] = factor_adosc(candles, key)[key].to_frame()
-                    factors_df_dict['ADOSC1'] = factor_adosc1(candles, key)[key].to_frame()
-                    factors_df_dict['AD'] = factor_ad(candles, key)[key].to_frame()
+                    # factors_df_dict['ADOSC1'] = factor_adosc1(candles, key)[key].to_frame()
+                    # factors_df_dict['AD'] = factor_ad(candles, key)[key].to_frame()
                 else:
-                    # factors_df_dict['NATR'] = factors_df_dict['NATR'].join(factor_natr(candles, key)[key].to_frame())
+                    factors_df_dict['NATR'] = factors_df_dict['NATR'].join(factor_natr(candles, key)[key].to_frame())
                     factors_df_dict['ROCR100'] = factors_df_dict['ROCR100'].join(
                         factor_rocr100(candles, key)[key].to_frame())
                     factors_df_dict['TRIX'] = factors_df_dict['TRIX'].join(factor_trix(candles, key)[key].to_frame())
-                    # factors_df_dict['DX'] = factors_df_dict['DX'].join(factor_dx(candles, key)[key].to_frame())
-                    # factors_df_dict['PPO'] = factors_df_dict['PPO'].join(factor_ppo(candles, key)[key].to_frame())
+                    factors_df_dict['DX'] = factors_df_dict['DX'].join(factor_dx(candles, key)[key].to_frame())
+                    factors_df_dict['PPO'] = factors_df_dict['PPO'].join(factor_ppo(candles, key)[key].to_frame())
                     factors_df_dict['ADX'] = factors_df_dict['ADX'].join(factor_adx(candles, key)[key].to_frame())
-                    # factors_df_dict['MINUS_DI'] = factors_df_dict['MINUS_DI'].join(factor_minus_di(candles, key)[key].to_frame())
+                    factors_df_dict['MINUS_DI'] = factors_df_dict['MINUS_DI'].join(factor_minus_di(candles, key)[key].to_frame())
                     factors_df_dict['ADXR'] = factors_df_dict['ADXR'].join(factor_adxr(candles, key)[key].to_frame())
-                    factors_df_dict['ULTOSC'] = factors_df_dict['ULTOSC'].join(factor_ultosc(candles, key)[key].to_frame())
+                    # factors_df_dict['ULTOSC'] = factors_df_dict['ULTOSC'].join(factor_ultosc(candles, key)[key].to_frame())
                     factors_df_dict['ULTOSC1'] = factors_df_dict['ULTOSC1'].join(factor_ultosc1(candles, key)[key].to_frame())
-                    # factors_df_dict['MFI'] = factors_df_dict['MFI'].join(factor_mfi(candles, key)[key].to_frame())
-                    # factors_df_dict['PLUS_DI'] = factors_df_dict['PLUS_DI'].join(factor_plus_di(candles, key)[key].to_frame())
+                    factors_df_dict['MFI'] = factors_df_dict['MFI'].join(factor_mfi(candles, key)[key].to_frame())
+                    factors_df_dict['PLUS_DI'] = factors_df_dict['PLUS_DI'].join(factor_plus_di(candles, key)[key].to_frame())
                     factors_df_dict['BOP'] = factors_df_dict['BOP'].join(factor_bop(candles, key)[key].to_frame())
                     # factors_df_dict['PLUS_DM'] = factors_df_dict['PLUS_DM'].join(
                     #     factor_plus_dm(candles, key)[key].to_frame())
-                    # factors_df_dict['AROONOSC'] = factors_df_dict['AROONOSC'].join(
-                    #     factor_aroonosc(candles, key)[key].to_frame())
-                    # factors_df_dict['WILLR'] = factors_df_dict['WILLR'].join(factor_willr(candles, key)[key].to_frame())
+                    factors_df_dict['AROONOSC'] = factors_df_dict['AROONOSC'].join(factor_aroonosc(candles, key)[key].to_frame())
+                    factors_df_dict['WILLR'] = factors_df_dict['WILLR'].join(factor_willr(candles, key)[key].to_frame())
                     factors_df_dict['ADOSC'] = factors_df_dict['ADOSC'].join(factor_adosc(candles, key)[key].to_frame())
-                    factors_df_dict['ADOSC1'] = factors_df_dict['ADOSC1'].join(factor_adosc1(candles, key)[key].to_frame())
-                    factors_df_dict['AD'] = factors_df_dict['AD'].join(factor_ad(candles, key)[key].to_frame())
+                    # factors_df_dict['ADOSC1'] = factors_df_dict['ADOSC1'].join(factor_adosc1(candles, key)[key].to_frame())
+                    # factors_df_dict['AD'] = factors_df_dict['AD'].join(factor_ad(candles, key)[key].to_frame())
             standardized_factors_df_dict = {}
             for key in factors_df_dict.keys():
                 standardized_factors_df_dict[key] = standardize(factors_df_dict[key])
@@ -305,28 +304,31 @@ class MultiFactorsStrategyV1(IStrategy):
             self.pair_data_dict_1h[pair] = df
 
     def populate_indicators(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
-        bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
-        dataframe["bb_lowerband"] = bollinger["lower"]
-        dataframe["bb_middleband"] = bollinger["mid"]
-        dataframe["bb_upperband"] = bollinger["upper"]
-        dataframe["bb_percent"] = (dataframe["close"] - dataframe["bb_lowerband"]) / (
-                dataframe["bb_upperband"] - dataframe["bb_lowerband"]
-        )
-        dataframe["bb_width"] = (dataframe["bb_upperband"] - dataframe["bb_lowerband"]) / dataframe[
-            "bb_middleband"
-        ]
+        # bollinger = qtpylib.bollinger_bands(qtpylib.typical_price(dataframe), window=20, stds=2)
+        # dataframe["bb_lowerband"] = bollinger["lower"]
+        # dataframe["bb_middleband"] = bollinger["mid"]
+        # dataframe["bb_upperband"] = bollinger["upper"]
+        # dataframe["bb_percent"] = (dataframe["close"] - dataframe["bb_lowerband"]) / (
+        #         dataframe["bb_upperband"] - dataframe["bb_lowerband"]
+        # )
+        # dataframe["bb_width"] = (dataframe["bb_upperband"] - dataframe["bb_lowerband"]) / dataframe[
+        #     "bb_middleband"
+        # ]
         dataframe["tema"] = ta.TEMA(dataframe, timeperiod=9)
-        dataframe["rsi"] = ta.RSI(dataframe)
+        # dataframe["rsi"] = ta.RSI(dataframe)
 
         return dataframe
 
     def populate_entry_trend(self, dataframe: DataFrame, metadata: dict) -> DataFrame:
+        short_symbols, long_symbols = self.calculate_target_symbols(datetime.datetime.utcnow())
         dataframe.loc[
             (
                 # Signal: RSI crosses above 30
                     # (qtpylib.crossed_above(dataframe["rsi"], self.buy_rsi.value))
-                    (dataframe["tema"] <= dataframe["bb_middleband"])  # Guard: tema below BB middle
-                    & (dataframe["tema"] > dataframe["tema"].shift(1))  # Guard: tema is raising
+                    # (dataframe["tema"] <= dataframe["bb_middleband"])  # Guard: tema below BB middle
+                    (metadata['pair'] in long_symbols)
+                    &
+                    (dataframe["tema"] > dataframe["tema"].shift(1))  # Guard: tema is raising
                     & (dataframe["volume"] > 0)  # Make sure Volume is not 0
             ),
             "enter_long",
@@ -336,8 +338,10 @@ class MultiFactorsStrategyV1(IStrategy):
             (
                 # Signal: RSI crosses above 70
                     # (qtpylib.crossed_below(dataframe["rsi"], self.short_rsi.value))
-                    (dataframe["tema"] > dataframe["bb_middleband"])  # Guard: tema above BB middle
-                    & (dataframe["tema"] < dataframe["tema"].shift(1))  # Guard: tema is falling
+                    # (dataframe["tema"] > dataframe["bb_middleband"])  # Guard: tema above BB middle
+                    (metadata['pair'] in short_symbols)
+                    &
+                    (dataframe["tema"] < dataframe["tema"].shift(1))  # Guard: tema is falling
                     & (dataframe["volume"] > 0)  # Make sure Volume is not 0
             ),
             "enter_short",
@@ -358,25 +362,29 @@ class MultiFactorsStrategyV1(IStrategy):
             **kwargs,
     ) -> bool:
         max_open_trades = self.config['max_open_trades']
-        short_symbols, long_symbols = self.calculate_target_symbols(current_time)
+        short_symbols, long_symbols = self.calculate_target_symbols(datetime.datetime.utcnow())
         logger.info('Short symbols: %s', short_symbols)
         logger.info('Long symbols: %s', long_symbols)
         num_shorts, num_longs, has_pair_pos = self.get_num_pos(pair, side == 'short')
-        if num_longs >= max_open_trades // 2 or num_shorts >= max_open_trades // 2 or has_pair_pos:
+        if has_pair_pos:
             return False
 
-        if side == 'short' and pair not in short_symbols:
+        if side == 'short' and (pair not in short_symbols or num_shorts >= max_open_trades // 2):
             return False
-        if side == 'long' and pair not in long_symbols:
+        if side == 'long' and (pair not in long_symbols or num_longs >= max_open_trades // 2):
             return False
         return True
 
     def populate_exit_trend(self, dataframe: DataFrame, metadata: dict):
+        short_symbols, long_symbols = self.calculate_target_symbols(datetime.datetime.utcnow())
+
         dataframe.loc[
             (
                 # Signal: RSI crosses above 70
                 #     (qtpylib.crossed_above(dataframe["rsi"], self.sell_rsi.value))
                 #     & (dataframe["tema"] > dataframe["bb_middleband"])  # Guard: tema above BB middle
+                    (metadata['pair'] not in long_symbols)
+                    &
                     (dataframe["tema"] < dataframe["tema"].shift(1))  # Guard: tema is falling
                     & (dataframe["volume"] > 0)  # Make sure Volume is not 0
             ),
@@ -390,6 +398,8 @@ class MultiFactorsStrategyV1(IStrategy):
                 #     &
                 #     # Guard: tema below BB middle
                 #     (dataframe["tema"] <= dataframe["bb_middleband"])
+                    (metadata['pair'] not in short_symbols)
+                    &
                     (dataframe["tema"] > dataframe["tema"].shift(1))  # Guard: tema is raising
                     & (dataframe["volume"] > 0)  # Make sure Volume is not 0
             ),
@@ -410,12 +420,14 @@ class MultiFactorsStrategyV1(IStrategy):
             current_time: datetime,
             **kwargs,
     ) -> bool:
-        pos_minutes = (current_time - trade.open_date_utc.replace(minute=0, second=0,
-                                                                  microsecond=0)).total_seconds() // 60
+        pos_minutes = (datetime.datetime.now(datetime.timezone.utc) - trade.open_date_utc.replace(minute=0, second=0,
+                                                                  microsecond=0, tzinfo=datetime.timezone.utc)).total_seconds() // 60
         if pos_minutes < 60 * 4:
             time.sleep(10)
             return False
-        short_symbols, long_symbols = self.calculate_target_symbols(current_time)
+        short_symbols, long_symbols = self.calculate_target_symbols(datetime.datetime.utcnow())
+        if not short_symbols or not long_symbols:
+            return False
         if trade.is_short and pair not in short_symbols:
             return True
         if not trade.is_short and pair not in long_symbols:
