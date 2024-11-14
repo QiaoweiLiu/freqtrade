@@ -6,13 +6,13 @@
 logfile.txt
 # user_data/*
 # !user_data/strategy/sample_strategy.py
-!user_data/notebooks
+#!user_data/notebooks
 !user_data/models
 !user_data/freqaimodels
 user_data/data/*
 user_data/freqaimodels/*
 user_data/models/*
-user_data/notebooks/*
+#user_data/notebooks/*
 user_data/backtest_results/*
 freqtrade-plot.html
 freqtrade-profit-plot.html
