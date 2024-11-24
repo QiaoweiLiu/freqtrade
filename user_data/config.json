@@ -1,6 +1,6 @@
 {
   "$schema": "https://schema.freqtrade.io/schema.json",
-  "max_open_trades": 20,
+  "max_open_trades": 40,
   "stake_currency": "USDT",
   "stake_amount": "unlimited",
   "tradable_balance_ratio": 0.99,
@@ -10,6 +10,7 @@
   "cancel_open_orders_on_exit": false,
   "trading_mode": "futures",
   "margin_mode": "isolated",
+  "ignore_buying_expired_candle_after": 60,
   "unfilledtimeout": {
     "entry": 10,
     "exit": 10,
@@ -93,7 +94,7 @@
             "FLOW/USDT:USDT",
             "1000XEC/USDT:USDT",
             "CHZ/USDT:USDT",
-            "KLAY/USDT:USDT",
+            // "KLAY/USDT:USDT",
             "CFX/USDT:USDT",
             "FXS/USDT:USDT",
             "ZEC/USDT:USDT",
